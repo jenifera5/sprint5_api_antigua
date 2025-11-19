@@ -1,0 +1,1219 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "📚 Biblioteca REST API",
+        "description": "API desarrollada por **Jenifer Alvarez** (Sprint 5 - IT Academy).  \r\n *\r\n * Implementa autenticación con **Laravel Passport**, control de acceso por roles  \r\n * y gestión de **Libros**, **Categorías** y **Préstamos**.  \r\n * Respuestas JSON estructuradas para integrarse con frontends o sistemas de IA.",
+        "contact": {
+            "name": "Jenifer Álvarez",
+            "url": "https://github.com/jenifera5"
+        },
+        "license": {
+            "name": "MIT License",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "Servidor local de desarrollo"
+        }
+    ],
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "Autentificación"
+                ],
+                "summary": "Registrar un nuevo usuario",
+                "operationId": "0903f2e0df1a8857bee538fc055417f0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Jenifer"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "jenifer@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "rol": {
+                                        "description": "Opcional: admin o usuario",
+                                        "type": "string",
+                                        "example": "admin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario registrado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario registrado correctamente"
+                                        },
+                                        "usuario": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "Jenifer"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "jenifer@example.com"
+                                                },
+                                                "rol": {
+                                                    "type": "string",
+                                                    "example": "admin"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJh..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Datos inválidos o email duplicado"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Autentificación"
+                ],
+                "summary": "Iniciar sesión de usuario",
+                "operationId": "2dd578ff7aba2721293dac66833b27d1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "jenifer@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "usuario": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "Jenifer"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "jenifer@example.com"
+                                                },
+                                                "rol": {
+                                                    "type": "string",
+                                                    "example": "admin"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJh..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciales incorrectas"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Autentificación"
+                ],
+                "summary": "Cerrar sesión del usuario autenticado",
+                "operationId": "68a6108af04af5e3bc1ea68a6c6f1299",
+                "responses": {
+                    "200": {
+                        "description": "Sesión cerrada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sesión cerrada correctamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado o token inválido"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/categories": {
+            "get": {
+                "tags": [
+                    "Categorías"
+                ],
+                "summary": "Listar todas las categorías",
+                "operationId": "e14ef422f94b0394478685818f324276",
+                "responses": {
+                    "200": {
+                        "description": "Lista de categorías obtenida correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "nombre": {
+                                                "type": "string",
+                                                "example": "Fantasía"
+                                            },
+                                            "descripcion": {
+                                                "type": "string",
+                                                "example": "Libros de fantasía y aventuras"
+                                            },
+                                            "libros": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 3
+                                                        },
+                                                        "titulo": {
+                                                            "type": "string",
+                                                            "example": "Harry Potter"
+                                                        },
+                                                        "autor": {
+                                                            "type": "string",
+                                                            "example": "J.K. Rowling"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Categorías"
+                ],
+                "summary": "Crear una nueva categoría",
+                "operationId": "129bd7008641f2b909015f592f93c073",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "descripcion"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Ciencia ficción"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "Libros futuristas o tecnológicos"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Categoría creada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Categoria creada correctamente"
+                                        },
+                                        "categoria": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "nombre": {
+                                                    "type": "string",
+                                                    "example": "Ciencia ficción"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "Libros futuristas o tecnológicos"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Datos inválidos"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/categories/{id}": {
+            "delete": {
+                "tags": [
+                    "Categorías"
+                ],
+                "summary": "Eliminar una categoría",
+                "operationId": "c03ab0c47b083852d08b0df5c9d9faf0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la categoría a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Categoría eliminada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Categoria eliminada correctamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Categoría no encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/books": {
+            "get": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Listar todos los libros",
+                "description": "Devuelve un listado de todos los libros registrados en la base de datos.",
+                "operationId": "f826b893452fdfde70f403cef218a493",
+                "responses": {
+                    "200": {
+                        "description": "Listado de libros obtenido correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "titulo": {
+                                                "type": "string",
+                                                "example": "Dune"
+                                            },
+                                            "autor": {
+                                                "type": "string",
+                                                "example": "Frank Herbert"
+                                            },
+                                            "anio": {
+                                                "type": "integer",
+                                                "example": 1965
+                                            },
+                                            "disponibles": {
+                                                "type": "integer",
+                                                "example": 5
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado o token inválido"
+                    }
+                }
+            }
+        },
+        "/books": {
+            "post": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Crear un nuevo libro",
+                "operationId": "89f7b090d9d078ec66aa5c369cee0662",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "titulo",
+                                    "autor",
+                                    "anio",
+                                    "disponibles"
+                                ],
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "La sombra del viento"
+                                    },
+                                    "autor": {
+                                        "type": "string",
+                                        "example": "Carlos Ruiz Zafón"
+                                    },
+                                    "anio": {
+                                        "type": "integer",
+                                        "example": 2001
+                                    },
+                                    "disponibles": {
+                                        "type": "integer",
+                                        "example": 5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Libro creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Libro creado correctamente"
+                                        },
+                                        "libro": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "titulo": {
+                                                    "type": "string",
+                                                    "example": "La sombra del viento"
+                                                },
+                                                "autor": {
+                                                    "type": "string",
+                                                    "example": "Carlos Ruiz Zafón"
+                                                },
+                                                "anio": {
+                                                    "type": "integer",
+                                                    "example": 2001
+                                                },
+                                                "disponibles": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Datos inválidos o faltantes"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/books/{id}": {
+            "put": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Actualizar un libro existente",
+                "operationId": "17f8c8125a390ddee0608ec21f680428",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del libro a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "titulo",
+                                    "autor",
+                                    "anio",
+                                    "disponibles"
+                                ],
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string",
+                                        "example": "El juego del ángel"
+                                    },
+                                    "autor": {
+                                        "type": "string",
+                                        "example": "Carlos Ruiz Zafón"
+                                    },
+                                    "anio": {
+                                        "type": "integer",
+                                        "example": 2008
+                                    },
+                                    "disponibles": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Libro actualizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Libro actualizado correctamente"
+                                        },
+                                        "libro": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "titulo": {
+                                                    "type": "string",
+                                                    "example": "El juego del ángel"
+                                                },
+                                                "autor": {
+                                                    "type": "string",
+                                                    "example": "Carlos Ruiz Zafón"
+                                                },
+                                                "anio": {
+                                                    "type": "integer",
+                                                    "example": 2008
+                                                },
+                                                "disponibles": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Libro no encontrado"
+                    },
+                    "422": {
+                        "description": "Datos inválidos o faltantes"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Eliminar un libro por ID",
+                "operationId": "1cb68ffe0dce1c858dbb4476b4c98ef4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del libro a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Libro eliminado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Libro eliminado correctamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Libro no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/books/search": {
+            "get": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Buscar libros por título o autor",
+                "operationId": "2504c05544e200ce6ac8c2bbf4629d0f",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "Término de búsqueda (título o autor)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Cervantes"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resultados obtenidos correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Resultados obtenidos correctamente"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "titulo": {
+                                                        "type": "string",
+                                                        "example": "Don Quijote de la Mancha"
+                                                    },
+                                                    "autor": {
+                                                        "type": "string",
+                                                        "example": "Miguel de Cervantes"
+                                                    },
+                                                    "anio": {
+                                                        "type": "integer",
+                                                        "example": 1605
+                                                    },
+                                                    "disponibles": {
+                                                        "type": "integer",
+                                                        "example": 4
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/books/stats/popular": {
+            "get": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Obtener los 5 libros más prestados",
+                "operationId": "86e56f4a0df7030a021b0b1c3e5288f4",
+                "responses": {
+                    "200": {
+                        "description": "Top 5 libros más prestados obtenidos correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Top 5 libros más prestados obtenidos correctamente"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 3
+                                                    },
+                                                    "titulo": {
+                                                        "type": "string",
+                                                        "example": "Cien años de soledad"
+                                                    },
+                                                    "autor": {
+                                                        "type": "string",
+                                                        "example": "Gabriel García Márquez"
+                                                    },
+                                                    "anio": {
+                                                        "type": "integer",
+                                                        "example": 1967
+                                                    },
+                                                    "disponibles": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "prestamos_count": {
+                                                        "type": "integer",
+                                                        "example": 15
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/loans": {
+            "get": {
+                "tags": [
+                    "Préstamos"
+                ],
+                "summary": "Listar todos los préstamos",
+                "operationId": "766507ce16ccc64c1d52008c7dd80908",
+                "responses": {
+                    "200": {
+                        "description": "Lista de préstamos obtenida correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "id_usuario": {
+                                                "type": "integer",
+                                                "example": 3
+                                            },
+                                            "id_libro": {
+                                                "type": "integer",
+                                                "example": 5
+                                            },
+                                            "fecha_prestamo": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2025-10-10"
+                                            },
+                                            "fecha_devolucion": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2025-10-25"
+                                            },
+                                            "estado": {
+                                                "type": "string",
+                                                "example": "pendiente"
+                                            },
+                                            "usuario": {
+                                                "properties": {
+                                                    "nombre": {
+                                                        "type": "string",
+                                                        "example": "Jenifer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "libro": {
+                                                "properties": {
+                                                    "titulo": {
+                                                        "type": "string",
+                                                        "example": "Dune"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Préstamos"
+                ],
+                "summary": "Crear un nuevo préstamo",
+                "operationId": "43f3f65f079f232d18323322efa77095",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_usuario",
+                                    "id_libro",
+                                    "fecha_prestamo",
+                                    "estado"
+                                ],
+                                "properties": {
+                                    "id_usuario": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "id_libro": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "fecha_prestamo": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-10-10"
+                                    },
+                                    "fecha_devolucion": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-10-20"
+                                    },
+                                    "estado": {
+                                        "type": "string",
+                                        "example": "pendiente"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Préstamo creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Prestamo creado correctamente"
+                                        },
+                                        "prestamo": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "id_usuario": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "id_libro": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "fecha_prestamo": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2025-10-10"
+                                                },
+                                                "fecha_devolucion": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2025-10-20"
+                                                },
+                                                "estado": {
+                                                    "type": "string",
+                                                    "example": "pendiente"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Datos inválidos"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/loans/{id}": {
+            "put": {
+                "tags": [
+                    "Préstamos"
+                ],
+                "summary": "Actualizar un préstamo existente",
+                "operationId": "56552c7aa6b966989a00c5f7d484db15",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del préstamo a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 4
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_usuario",
+                                    "id_libro",
+                                    "fecha_prestamo",
+                                    "estado"
+                                ],
+                                "properties": {
+                                    "id_usuario": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "id_libro": {
+                                        "type": "integer",
+                                        "example": 6
+                                    },
+                                    "fecha_prestamo": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-10-01"
+                                    },
+                                    "fecha_devolucion": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-10-15"
+                                    },
+                                    "estado": {
+                                        "type": "string",
+                                        "example": "devuelto"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Préstamo actualizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Prestamo actualizado correctamente"
+                                        },
+                                        "prestamo": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 4
+                                                },
+                                                "id_usuario": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "id_libro": {
+                                                    "type": "integer",
+                                                    "example": 6
+                                                },
+                                                "fecha_prestamo": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2025-10-01"
+                                                },
+                                                "fecha_devolucion": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2025-10-15"
+                                                },
+                                                "estado": {
+                                                    "type": "string",
+                                                    "example": "devuelto"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Préstamo no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Préstamos"
+                ],
+                "summary": "Eliminar un préstamo",
+                "operationId": "d28a4691e1f1057d817a9496a56e0fa7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del préstamo a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 7
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Préstamo eliminado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Prestamo eliminado correctamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Préstamo no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autentificación",
+            "description": "Autentificación"
+        },
+        {
+            "name": "Categorías",
+            "description": "Categorías"
+        },
+        {
+            "name": "Libros",
+            "description": "Libros"
+        },
+        {
+            "name": "Préstamos",
+            "description": "Préstamos"
+        }
+    ],
+    "security": [
+        [
+            {
+                "bearerAuth": []
+            }
+        ]
+    ]
+}
