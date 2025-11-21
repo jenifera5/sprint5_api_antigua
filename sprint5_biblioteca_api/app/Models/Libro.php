@@ -2,36 +2,23 @@
 
 namespace App\Models;
 
-use Laravel\Passport\HasApiTokens;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Usuario extends Authenticatable
+class Libro extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
-    protected $table = 'usuarios';
+    protected $fillable = ['titulo', 'autor', 'anio', 'disponibles'];
 
-    protected $fillable = [
-        'nombre',
-        'email',
-        'password',
-        'rol',
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
+    // Relaciones
     public function prestamos()
     {
-        return $this->hasMany(Prestamo::class, 'id_usuario');
+        return $this->hasMany(Prestamo::class, 'id_libro');
     }
 
-    public function esAdmin(): bool
+    public function categorias()
     {
-        return $this->rol === 'admin';
+        return $this->belongsToMany(Categoria::class, 'libro_categorias', 'id_libro', 'id_categoria');
     }
 }
